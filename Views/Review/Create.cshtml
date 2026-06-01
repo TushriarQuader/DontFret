@@ -1,0 +1,35 @@
+@using DontFret.Models
+@{
+    ViewData["Title"] = "Write a Review";
+}
+
+<div class="container mt-4" style="max-width: 600px;">
+    <h2>Write a Review for @ViewData["ProductName"]</h2>
+
+    <form method="post" action="@Url.Action("Create", "Review")">
+        <input type="hidden" name="productId" value="@ViewData["ProductId"]" />
+
+        <div class="mb-3">
+            <label class="form-label">Rating</label>
+            <select name="score" class="form-select" required>
+                @foreach (var star in Enum.GetValues(typeof(StarRating)))
+                {
+                    <option value="@((int)star)">@star.ToString()</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Title (optional)</label>
+            <input type="text" name="title" class="form-control" maxlength="100" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Review (optional)</label>
+            <textarea name="body" class="form-control" rows="5" maxlength="1000"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <a asp-action="Details" asp-controller="Catalogue" asp-route-id="@ViewData["ProductId"]" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

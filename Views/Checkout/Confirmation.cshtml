@@ -1,0 +1,67 @@
+@model DontFret.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+
+@if (TempData["Error"] is string errMsg)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errMsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="confirm-header">
+    <h1>&#10003; Order Confirmed!</h1>
+    <p class="mb-0">Thank you for your purchase. We've received your order and will process it shortly.</p>
+</div>
+
+<div class="confirm-body">
+    <div class="d-flex justify-content-between pb-3" style="border-bottom: 2px solid #eee;">
+        <h2>Order #@Model.Id</h2>
+        <span class="status-badge bg-success">@Model.Status</span>
+    </div>
+
+    <div class="row g-3 my-3">
+        <div class="col-md-6">
+            <div class="bg-light p-3 rounded">
+                <h3 style="font-size: 0.9rem; color: #666;">Order Date</h3>
+                <p class="mb-0">@Model.OrderDate.ToString("d")</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="bg-light p-3 rounded">
+                <h3 style="font-size: 0.9rem; color: #666;">Invoice</h3>
+                <p class="mb-1">@Model.Invoice?.InvoiceNumber</p>
+                <a asp-controller="Orders" asp-action="GenerateInvoice" asp-route-orderId="@Model.Id" class="btn btn-primary btn-sm">Download Invoice</a>
+            </div>
+        </div>
+    </div>
+
+    <h3>Order Items</h3>
+    @foreach (var item in Model.Items)
+    {
+        <div class="d-flex justify-content-between py-3" style="border-bottom: 1px solid #eee;">
+            <div>
+                <strong>@item.Product.Name</strong><br />
+                <span class="text-muted">Qty: @item.Quantity</span>
+            </div>
+            <div class="fw-semibold" style="color: #159895;">
+                @((item.UnitPrice * item.Quantity).ToString("C"))
+            </div>
+        </div>
+    }
+
+    <div class="bg-light p-3 rounded mt-3">
+        <div class="d-flex justify-content-between">
+            <span>Total</span>
+            <strong>@Model.TotalAmount.ToString("C")</strong>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Catalogue" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+        <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">View Order</a>
+    </div>
+</div>

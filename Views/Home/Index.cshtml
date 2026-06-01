@@ -1,0 +1,64 @@
+﻿@model List<DontFret.Models.Product>
+@{
+    ViewData["Title"] = "Home - DontFret";
+}
+
+<div class="container mt-4">
+    <!-- Hero banner with GIFs -->
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <img src="~/images/1.gif" alt="" class="hero-gif" />
+        <div class="hero-banner flex-grow-1 p-5 rounded">
+            <h1>Welcome to DontFret</h1>
+            <p class="lead">We sell guitars and stuff</p>
+        </div>
+        <img src="~/images/3.gif" alt="" class="hero-gif" />
+    </div>
+    <img src="~/images/2.gif" alt="" class="hero-gif d-block mx-auto mb-4" />
+    <h2>Our Products</h2>
+
+    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="@i"
+                        class="@(i == 0 ? "active" : "")"
+                        aria-current="@(i == 0 ? "true" : "")"
+                        aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                var product = Model[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="@product.ImageUrl" alt="@product.Name"
+                             style="height: 400px; width: 100%; object-fit: contain; background: #f8f9fa;" />
+                    }
+                    else
+                    {
+                        <div style="height: 400px; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-muted">No image</span>
+                        </div>
+                    }
+                    <div class="carousel-caption d-none d-md-block" style="background: rgba(0,0,0,0.6); border-radius: 8px; padding: 1rem 1.5rem;">
+                        <h3 style="color: #fff;">@product.Name</h3>
+                        <p style="color: #ddd; margin-bottom: 4px;">@product.Description</p>
+                        <p style="color: #e67e22; font-weight: 700; font-size: 1.2rem;">&pound;@product.Price.ToString("0.00")</p>
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"
+                           class="btn btn-primary btn-sm">View Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" style="filter: invert(1);"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" style="filter: invert(1);"></span>
+        </button>
+    </div>
+</div>

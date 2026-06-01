@@ -1,0 +1,26 @@
+﻿@model DontFret.Models.User
+
+@{
+    ViewData["Title"] = "Ban User";
+}
+
+<div class="admin-main" style="margin: -1.5rem; padding: 1.5rem;">
+    <h1>Ban User</h1>
+
+    <div class="alert alert-danger">
+        <strong>Warning:</strong> Are you sure you want to remove this user's account? This action cannot be undone.
+    </div>
+
+    <dl class="row" style="color: #fff; max-width: 500px;">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Username</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Delete Account</button>
+        <a asp-action="ViewUsers" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

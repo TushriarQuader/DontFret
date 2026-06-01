@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Verify Email";
+    var email = ViewData["Email"] as string;
+}
+
+<h1>Verify Your Email</h1>
+<p>Enter the 6-digit code sent to your email address.</p>
+
+@if (ViewData["Email"] is string && !string.IsNullOrEmpty(ViewData["Email"]!.ToString()))
+{
+    <p class="text-muted">Code sent to: <strong>@ViewData["Email"]</strong></p>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="@email" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Verification Code</label>
+                <input type="text" name="code" class="form-control" placeholder="Enter 6-digit code" maxlength="6" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Verify</button>
+        </form>
+
+        <form method="post" asp-action="ResendCode" class="mt-3">
+            <input type="hidden" name="email" value="@email" />
+            <button type="submit" class="btn btn-link p-0">Resend code</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+@model DontFret.Models.OrderItem
+
+@{
+    ViewData["Title"] = "Request Refund";
+}
+
+<h2>Request Refund</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Product.Name</h5>
+        <p class="mb-1"><strong>Order #</strong> @Model.OrderId</p>
+        <p class="mb-1"><strong>Quantity:</strong> @Model.Quantity</p>
+        <p class="mb-0"><strong>Price:</strong> @Model.UnitPrice.ToString("C")</p>
+        <p class="mb-0"><strong>Total:</strong> @((Model.UnitPrice * Model.Quantity).ToString("C"))</p>
+    </div>
+</div>
+
+<form asp-action="RequestRefund" method="post">
+    <input type="hidden" name="orderItemId" value="@Model.Id" />
+
+    <div class="mb-3">
+        <label for="reason" class="form-label">Reason for refund</label>
+        <textarea id="reason" name="reason" class="form-control" rows="4" maxlength="500" required></textarea>
+        <div class="form-text">Please describe why you'd like a refund for this item (max 500 characters).</div>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Submit Refund Request</button>
+    <a asp-action="Details" asp-route-id="@Model.OrderId" class="btn btn-secondary">Cancel</a>
+</form>

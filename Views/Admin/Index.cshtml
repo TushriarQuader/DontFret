@@ -1,0 +1,51 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="admin-main" style="margin: -1.5rem; padding: 1.5rem;">
+    <h1>Admin Dashboard</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h3>Total Orders</h3>
+                <div class="metric-value">@ViewData["TotalOrders"]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h3>Total Revenue</h3>
+                <div class="metric-value">@(((decimal)ViewData["TotalRevenue"]!).ToString("C"))</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h3>Low Stock Items</h3>
+                <div class="metric-value" style="color: #ffc107;">@ViewData["LowStockCount"]</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <h3>Pending Orders</h3>
+                <div class="metric-value" style="color: #17a2b8;">@ViewData["PendingOrders"]</div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Quick Actions</h3>
+    <div class="d-flex gap-2 mb-4 flex-wrap">
+        <a asp-action="DashBoard" class="btn btn-primary">Full Dashboard</a>
+        <a asp-action="ViewUsers" class="btn btn-primary">User Management</a>
+        <a asp-action="InventoryDashboard" class="btn btn-primary">Inventory Management</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="ProductDashboard" class="btn btn-primary">Product Management</a>
+        }
+        <a asp-action="ManageInventory" class="btn btn-secondary">Manage Stock Levels</a>
+        <a asp-controller="Orders" asp-action="Manage" class="btn btn-secondary">Manage Orders</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="ManageUsers" class="btn btn-secondary">Manage Users</a>
+        }
+    </div>
+</div>

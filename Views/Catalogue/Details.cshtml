@@ -1,0 +1,61 @@
+@model DontFret.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<h1>@Model.Name</h1>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width: 400px; max-height: 400px; object-fit: contain;" class="img-fluid mb-3" />
+        }
+        <p>@Model.Description</p>
+        <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+        <p><strong>Category:</strong> @Model.Category</p>
+        <p><strong>Stock:</strong> @Model.StockQuantity</p>
+    </div>
+
+    <div class="col-md-4">
+        <form asp-controller="Basket" asp-action="AddToBasket" method="post" class="mb-2">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary w-100">Add to Basket</button>
+        </form>
+
+        <form asp-controller="Wishlist" asp-action="AddToWishlist" method="post">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <button type="submit" class="btn btn-secondary w-100">Add to Wishlist</button>
+        </form>
+    </div>
+</div>
+
+@if (Model.Reviews?.Count > 0)
+{
+    <h3 class="mt-4">Reviews</h3>
+    foreach (var review in Model.Reviews)
+    {
+        <div class="review-card">
+            <h5>@review.Title</h5>
+            <p>Rating: @review.Score (@("".PadRight((int)review.Score, '\u2605').PadRight(5, '\u2606')))</p>
+            <p>@review.Body</p>
+            <p class="mb-0"><small class="text-muted">By: @review.Customer?.UserName</small></p>
+        </div>
+    }
+}
+else
+{
+    <p class="mt-3">No reviews yet.</p>
+}
+
+@if (ViewData["HasPurchased"] is true && ViewData["AlreadyReviewed"] is false)
+{
+    <div class="mt-3">
+        <a asp-controller="Review" asp-action="Create" asp-route-productId="@Model.Id" class="btn btn-success">Write a Review</a>
+    </div>
+}
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to Catalogue</a>
+</div>

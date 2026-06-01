@@ -1,0 +1,150 @@
+﻿@model IEnumerable<DontFret.Models.Product>
+@using DontFret.Models
+
+@{
+    ViewData["Title"] = "Catalogue";
+}
+
+<div class="container mt-4">
+    <h2>Product Catalogue</h2>
+
+    <!-- Search -->
+    <form method="get" action="@Url.Action("Index", "Catalogue")" class="mb-4 p-3 bg-light rounded">
+        <div class="row g-2 mb-3">
+            <div class="col-md-10">
+                <input type="text" name="searchTerm" class="form-control" placeholder="Search products..." value="@ViewData["SearchTerm"]" />
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+
+    <!-- Filters -->
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label class="form-label">Min Price</label>
+            <input type="number" name="minPrice" class="form-control" value="@ViewData["MinPrice"]" step="0.01" min="0" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Max Price</label>
+            <input type="number" name="maxPrice" class="form-control" value="@ViewData["MaxPrice"]" step="0.01" min="0" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-select">
+                <option value="">All</option>
+                @{
+                    var selectedCat = ViewData["SelectedCategory"] as Category?;
+                }
+                @foreach (var cat in Enum.GetValues(typeof(Category)))
+                {
+                    var catValue = (Category)cat;
+                    if (selectedCat.HasValue && selectedCat.Value == catValue)
+                    {
+                        <option value="@((int)cat)" selected>@cat.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@((int)cat)">@cat.ToString()</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Min Rating</label>
+            <select name="minRating" class="form-select">
+                <option value="">Any</option>
+                @{
+                    var selectedRating = ViewData["MinRating"] as int?;
+                }
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (selectedRating.HasValue && selectedRating.Value == i)
+                    {
+                        <option value="@i" selected>@i star@(i > 1 ? "s" : "")</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i star@(i > 1 ? "s" : "")</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <div class="form-check">
+                <input type="checkbox" name="inStock" value="true" class="form-check-input" @(ViewData["InStock"]?.Equals(true) == true ? "checked" : "") />
+                <label class="form-check-label">In Stock Only</label>
+            </div>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+    </form>
+
+    <!-- Grid/List Toggle -->
+    <div class="mb-3">
+        <button id="gridBtn" class="btn btn-outline-secondary btn-sm" onclick="setLayout('grid')">Grid</button>
+        <button id="listBtn" class="btn btn-outline-secondary btn-sm" onclick="setLayout('list')">List</button>
+    </div>
+
+    <!-- Products -->
+    <div id="productContainer" class="row">
+        @foreach (var product in Model)
+        {
+            <div class="product-item col-md-4 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="@product.ImageUrl" alt="@product.Name" class="card-img-top" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text text-muted">@product.Description</p>
+                        <p class="card-text fw-bold">£@product.Price.ToString("0.00")</p>
+                        <p class="card-text">
+                            <span class="badge bg-secondary">@product.Category.ToString()</span>
+                        </p>
+                        <p class="card-text">Stock: @product.StockQuantity</p>
+                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function setLayout(layout) {
+        const container = document.getElementById('productContainer');
+        const items = container.querySelectorAll('.product-item');
+        const gridBtn = document.getElementById('gridBtn');
+        const listBtn = document.getElementById('listBtn');
+
+        if (layout === 'list') {
+            items.forEach(item => {
+                item.className = 'product-item col-12 mb-3';
+                const card = item.querySelector('.card');
+                card.className = 'card h-100 d-flex flex-row';
+            });
+            gridBtn.className = 'btn btn-outline-secondary btn-sm';
+            listBtn.className = 'btn btn-secondary btn-sm';
+        } else {
+            items.forEach(item => {
+                item.className = 'product-item col-md-4 mb-4';
+                const card = item.querySelector('.card');
+                card.className = 'card h-100';
+            });
+            gridBtn.className = 'btn btn-secondary btn-sm';
+            listBtn.className = 'btn btn-outline-secondary btn-sm';
+        }
+
+        localStorage.setItem('catalogueLayout', layout);
+    }
+
+    // Load saved layout on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedLayout = localStorage.getItem('catalogueLayout') || 'grid';
+        setLayout(savedLayout);
+    });
+</script>
+

@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DontFret</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo"><img src="~/images/logo.jpg" alt="" class="logo-img" /><span>DontFret</span></div>
+        <nav>
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Catalogue" asp-action="Index">Catalogue</a>
+
+            @{
+                var bCount = 0;
+                var wCount = 0;
+                if( User.Identity.IsAuthenticated )
+                {
+                    var uid = User.FindFirstValue( ClaimTypes.NameIdentifier );
+                    if( uid is not null )
+                    {
+                        bCount = await _dbContext.BasketItems.CountAsync( bi => bi.Basket.CustomerId == uid );
+                        wCount = await _dbContext.WishlistItems.CountAsync( wi => wi.Wishlist.CustomerId == uid );
+                    }
+                }
+            }
+            @if( User.Identity.IsAuthenticated )
+            {
+                <a asp-controller="Basket" asp-action="Index">
+                    Basket
+                    @if( bCount > 0 )
+                    {
+                        <span class="badge bg-warning text-dark ms-1">@bCount</span>
+                    }
+                </a>
+                <a asp-controller="Wishlist" asp-action="Index">
+                    Wishlist
+                    @if( wCount > 0 )
+                    {
+                        <span class="badge bg-warning text-dark ms-1">@wCount</span>
+                    }
+                </a>
+                <a asp-controller="Orders" asp-action="Index">My Orders</a>
+                <a asp-controller="Account" asp-action="Profile">My Profile</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("OfficeClerk"))
+                {
+                    <a asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
+                }
+                <form asp-area="Identity" asp-page="/Account/Logout" method="post" style="display:inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+                <a asp-area="Identity" asp-page="/Account/Register">Register</a>
+            }
+        </nav>
+    </header>
+
+    <div class="promo-strip">
+        <span>Free UK delivery on orders over &pound;50</span>
+        <span class="highlight">30-day money-back guarantee</span>
+        <span>Easy Click &amp; Collect available</span>
+    </div>
+
+    <div class="container" style="padding-top: 1.5rem;">
+        <main role="main" class="pb-3">
+            @await Html.PartialAsync("_NotificationPartial")
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        &copy; 2026 - DontFret - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

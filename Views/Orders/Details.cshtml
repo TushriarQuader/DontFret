@@ -1,0 +1,117 @@
+@model DontFret.Models.Order
+@using DontFret.Models
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+@if (TempData["ErrorMessage"] is string errMsg)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errMsg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="d-flex justify-content-between pb-3" style="border-bottom: 2px solid #eee;">
+    <h2>Order #@Model.Id</h2>
+    <span class="status-badge @GetStatusClass(Model.Status)">@Model.Status</span>
+</div>
+
+<div class="row g-3 my-3">
+    <div class="col-md-6">
+        <div class="bg-light p-3 rounded">
+            <h3 style="font-size: 0.9rem; color: #666;">Order Date</h3>
+            <p class="mb-0">@Model.OrderDate.ToString("d")</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="bg-light p-3 rounded">
+            <h3 style="font-size: 0.9rem; color: #666;">Invoice</h3>
+            <p class="mb-1">@Model.Invoice?.InvoiceNumber</p>
+            @if (Model.Invoice is not null)
+            {
+                <a asp-action="GenerateInvoice" asp-route-orderId="@Model.Id" class="btn btn-primary btn-sm">Download</a>
+            }
+        </div>
+    </div>
+</div>
+
+<h3>Order Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Refund</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td><strong>@item.Product.Name</strong></td>
+                <td>@item.UnitPrice.ToString("C")</td>
+                <td>@item.Quantity</td>
+                <td>@((item.UnitPrice * item.Quantity).ToString("C"))</td>
+                <td>
+                    @if (item.RefundStatus == null && Model.Status != OrderStatus.Cancelled && Model.Status != OrderStatus.Returned)
+                    {
+                        <a asp-action="RequestRefund" asp-route-orderItemId="@item.Id" class="btn btn-sm btn-warning">Request Refund</a>
+                    }
+                    else if (item.RefundStatus == RefundRequestStatus.Pending)
+                    {
+                        <span class="status-badge @GetRefundStatusClass(item.RefundStatus.Value)">Refund Pending</span>
+                    }
+                    else if (item.RefundStatus == RefundRequestStatus.Approved)
+                    {
+                        <div>
+                            <span class="status-badge @GetRefundStatusClass(item.RefundStatus.Value)">Refund Approved</span>
+                            <a asp-action="ReturnLabel" asp-route-orderItemId="@item.Id" class="btn btn-sm btn-success mt-1">Print Return Label</a>
+                        </div>
+                    }
+                    else if (item.RefundStatus == RefundRequestStatus.Rejected)
+                    {
+                        <span class="status-badge @GetRefundStatusClass(item.RefundStatus.Value)">Refund Rejected</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="bg-light p-3 rounded mt-3" style="max-width: 400px; float: right;">
+    <div class="d-flex justify-content-between fw-bold" style="font-size: 1.1em;">
+        <span>Total</span>
+        <span>@Model.TotalAmount.ToString("C")</span>
+    </div>
+</div>
+<div style="clear: both;"></div>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-primary">Back to Orders</a>
+    <a asp-controller="Catalogue" asp-action="Index" class="btn btn-secondary">Continue Shopping</a>
+</div>
+
+@functions {
+    string GetStatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Pending => "status-pending",
+        OrderStatus.Dispatched => "status-dispatched",
+        OrderStatus.OutForDelivery => "status-outfordelivery",
+        OrderStatus.Delivered => "status-delivered",
+        OrderStatus.Cancelled => "status-cancelled",
+        OrderStatus.Returned => "status-returned",
+        _ => "bg-secondary"
+    };
+
+    string GetRefundStatusClass(RefundRequestStatus status) => status switch
+    {
+        RefundRequestStatus.Pending => "status-refund-pending",
+        RefundRequestStatus.Approved => "status-refund-approved",
+        RefundRequestStatus.Rejected => "status-refund-rejected",
+        _ => "bg-secondary"
+    };
+}

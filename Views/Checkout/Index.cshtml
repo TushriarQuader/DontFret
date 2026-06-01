@@ -1,0 +1,67 @@
+@model List<DontFret.Models.BasketItem>
+
+@{
+    ViewData["Title"] = "Checkout";
+    var subtotal = (decimal)(ViewData["Subtotal"] ?? 0m);
+    var shipping = (decimal)(ViewData["Shipping"] ?? 0m);
+    var total = (decimal)(ViewData["Total"] ?? 0m);
+}
+
+<h1>Checkout</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <h3>1. Delivery Details</h3>
+        <form asp-action="PlaceOrder" method="post">
+            <div class="mb-3">
+                <label class="form-label">Delivery Address</label>
+                <textarea name="deliveryAddress" class="form-control" rows="3" required>@ViewData["Address"]</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Postcode</label>
+                <input type="text" name="deliveryPostcode" class="form-control" maxlength="8" required value="@ViewData["Postcode"]" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Courier</label>
+                <select name="courier" class="form-select" required>
+                    <option value="Royal Mail">Royal Mail</option>
+                    <option value="DPD">DPD</option>
+                    <option value="Click & Collect">Click & Collect</option>
+                </select>
+            </div>
+
+            <h3>2. Payment</h3>
+            <p>We do not store card data. Payments are processed securely via <strong>Stripe</strong>.</p>
+
+            <button type="submit" class="btn btn-success w-100 mt-3">
+                Pay with Stripe — @total.ToString("C")
+            </button>
+        </form>
+    </div>
+
+    <div class="col-md-4">
+        <div class="summary-sidebar">
+            <h3>Order Summary</h3>
+            @foreach (var item in Model)
+            {
+                <div class="d-flex justify-content-between py-2" style="border-bottom: 1px dashed #ccc;">
+                    <span>@item.Product.Name</span>
+                    <span>@item.Quantity</span>
+                    <span>@((item.Product.Price * item.Quantity).ToString("C"))</span>
+                </div>
+            }
+            <div class="d-flex justify-content-between py-2">
+                <span>Subtotal</span>
+                <span>@subtotal.ToString("C")</span>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+                <span>Shipping</span>
+                <span>@shipping.ToString("C")</span>
+            </div>
+            <div class="d-flex justify-content-between py-2 fw-bold">
+                <span>Total</span>
+                <span>@total.ToString("C")</span>
+            </div>
+        </div>
+    </div>
+</div>

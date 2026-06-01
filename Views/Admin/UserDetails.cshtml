@@ -1,0 +1,42 @@
+﻿@model DontFret.Models.User
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<div class="admin-main" style="margin: -1.5rem; padding: 1.5rem;">
+    <h1>User Details</h1>
+
+    <dl class="row" style="color: #fff; max-width: 600px;">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Username</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+
+        <dt class="col-sm-3">Phone</dt>
+        <dd class="col-sm-9">@(Model.PhoneNumber ?? "-")</dd>
+
+        <dt class="col-sm-3">Address</dt>
+        <dd class="col-sm-9">@Model.Address</dd>
+
+        <dt class="col-sm-3">Postcode</dt>
+        <dd class="col-sm-9">@Model.Postcode</dd>
+
+        <dt class="col-sm-3">Role(s)</dt>
+        <dd class="col-sm-9">
+            @foreach (var role in (IList<string>)ViewData["Roles"]!)
+            {
+                <span class="badge bg-secondary">@role</span>
+            }
+            @if (((IList<string>)ViewData["Roles"]!).Count == 0)
+            {
+                <span class="badge bg-warning">No Role</span>
+            }
+        </dd>
+    </dl>
+
+    <p>
+        <a asp-action="ViewUsers" class="btn btn-secondary">Back to User Management</a>
+    </p>
+</div>
