@@ -1,0 +1,188 @@
+:root {
+  --brand-orange: #e67e22;
+  --brand-orange-dark: #d35400;
+  --brand-dark: #2c3e50;
+  --brand-darker: #1a1a1a;
+  --brand-footer: #222;
+  --gray-light: #f4f4f4;
+  --gray-mid: #ddd;
+  --text-muted: #6c757d;
+  --border-radius: 6px;
+}
+
+html { font-size: 14px; position: relative; min-height: 100%; }
+@media (min-width: 768px) { html { font-size: 16px; } }
+
+body { margin-bottom: 60px; font-family: 'Segoe UI', sans-serif; background: var(--gray-light); }
+
+/* ── Header / Nav ── */
+.site-header {
+  background: var(--brand-dark);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.site-header .logo { display: flex; align-items: center; gap: 10px; }
+.site-header .logo h1 { margin: 0; font-size: 1.5rem; }
+.site-header .logo span { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.site-header .logo-img { height: 40px; width: auto; display: block; }
+.site-header nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.site-header nav a:hover { color: var(--brand-orange); }
+.site-header .logout-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0 12px;
+}
+.site-header .logout-btn:hover { color: var(--brand-orange); }
+
+/* ── Promo Strip ── */
+.promo-strip {
+  background: var(--brand-darker);
+  color: #ccc;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+.promo-strip span { white-space: nowrap; }
+.promo-strip .highlight { color: var(--brand-orange); font-weight: 600; }
+
+/* ── Hero ── */
+.hero-gif { width: 120px; height: auto; border-radius: var(--border-radius); }
+.hero-banner {
+  background: linear-gradient(135deg, var(--brand-dark), #1a5f7a);
+  color: #fff;
+  padding: 3rem 1.5rem;
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+
+/* ── Cards ── */
+.card { border: none; box-shadow: 0 1px 4px rgba(0,0,0,0.08); border-radius: var(--border-radius); }
+.card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+.card-img-top { height: 200px; object-fit: contain; background: #f8f9fa; padding: 4px; }
+
+/* ── Buttons ── */
+.btn { border-radius: var(--border-radius); font-weight: 600; }
+.btn-primary { background: var(--brand-orange); border-color: var(--brand-orange); color: #fff; }
+.btn-primary:hover { background: var(--brand-orange-dark); border-color: var(--brand-orange-dark); color: #fff; }
+.btn-outline-secondary:hover { background: var(--brand-dark); color: #fff; }
+
+/* ── Status Badges ── */
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+}
+.status-pending { background: #f39c12; }
+.status-dispatched { background: #3498db; }
+.status-outfordelivery { background: #9b59b6; }
+.status-delivered { background: #27ae60; }
+.status-cancelled { background: #e74c3c; }
+.status-returned { background: #95a5a6; }
+.status-refund-pending { background: #f39c12; }
+.status-refund-approved { background: #27ae60; }
+.status-refund-rejected { background: #e74c3c; }
+
+.stock-instock { color: #28a745; font-weight: 600; }
+.stock-low { color: #dc3545; font-weight: 700; }
+.stock-medium { color: #ffc107; font-weight: 600; }
+
+/* ── Footer ── */
+.site-footer {
+  background: var(--brand-footer);
+  color: #aaa;
+  text-align: center;
+  padding: 1.5rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.site-footer a { color: var(--brand-orange); text-decoration: none; }
+
+/* ── Admin Dark Theme ── */
+.admin-layout { display: flex; min-height: calc(100vh - 120px); }
+.admin-sidebar {
+  width: 220px;
+  background: #000;
+  padding: 1.25rem;
+  flex-shrink: 0;
+}
+.admin-sidebar h3 { color: #fff; font-size: 1.1rem; margin-bottom: 1rem; }
+.admin-sidebar a {
+  display: block;
+  color: #ccc;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}
+.admin-sidebar a:hover { color: #fff; background: #333; }
+.admin-main { flex: 1; padding: 1.5rem; background: var(--brand-darker); min-height: 100%; }
+.admin-main h1, .admin-main h2, .admin-main h3 { color: #fff; }
+
+.metric-card {
+  background: #333;
+  color: #fff;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+}
+.metric-card h3 { font-size: 0.9rem; color: #aaa; margin-bottom: 0.5rem; }
+.metric-card .metric-value { font-size: 2rem; font-weight: 700; }
+
+/* ── Tables ── */
+.admin-main .table { color: #fff; }
+.admin-main .table thead th { border-bottom-color: #555; color: #aaa; }
+.admin-main .table td { border-color: #444; }
+
+/* ── Utility overrides ── */
+.bg-orange { background-color: var(--brand-orange); }
+.text-orange { color: var(--brand-orange); }
+
+/* ── Order summary sidebar ── */
+.summary-sidebar {
+  background: #eef4ff;
+  padding: 1.25rem;
+  border-radius: var(--border-radius);
+}
+
+/* ── Confirmation page ── */
+.confirm-header {
+  background: linear-gradient(135deg, #1a5f7a, #159895);
+  color: #fff;
+  padding: 2.5rem;
+  text-align: center;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+.confirm-body {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+/* ── Review card ── */
+.review-card {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 0.75rem;
+}
